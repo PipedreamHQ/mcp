@@ -56,7 +56,7 @@
     "codemirror": "^6.0.1",
     "date-fns": "^4.1.0",
     "diff-match-patch": "^1.0.5",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.34.0",
     "exa-js": "^1.5.12",
     "fast-deep-equal": "^3.1.3",

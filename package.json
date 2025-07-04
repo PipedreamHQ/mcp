@@ -5,7 +5,7 @@
   "description": "Model Context Protocol (MCP) Monorepo",
   "scripts": {
     "build": "pnpm -r build",
-    "chat": "ENV_FILE_PATH=$(pwd)/.env pnpm --filter ./examples/chat run dev",
+    "chat": "pnpm --filter ./examples/chat run dev",
     "ai-sdk": "pnpm --filter ./examples/ai-sdk run start",
     "openai-sdk": "pnpm --filter ./examples/openai-sdk run start"
   },
