@@ -16,10 +16,11 @@ The idea is to manually reload the list of tools on each turn.
 
 ## Examples
 
-This repo includes two examples showing different approaches to integrating with Pipedream's dynamic MCP server:
+This repo includes three examples showing different approaches to integrating with Pipedream's dynamic MCP server:
 
 - The **[AI SDK Example](examples/ai-sdk/)** uses Vercel's AI SDK with automatic tool handling
 - The **[OpenAI SDK Example](examples/openai-sdk/)** uses OpenAI SDK directly with manual tool conversion for full control
+- The **[Chat App Example](examples/chat/)** is a full-featured web application demonstrating MCP integration in a real-world chat interface
 
 ### Installation
 
@@ -70,3 +71,32 @@ For example:
 pnpm ai-sdk -u <uuid> "Send a funny joke to the #random channel in Slack"
 pnpm openai-sdk -u <uuid> "Send a funny joke to the #random channel in Slack"
 ```
+
+#### Chat App Example
+
+The chat app is a full-featured Next.js web application that demonstrates MCP integration in a production-ready environment:
+
+```bash
+cd examples/chat
+pnpm install
+pnpm dev
+```
+
+The chat app includes:
+
+- **Interactive Web Interface**: Full-featured chat UI with real-time messaging
+- **Multi-model Support**: Works with both Anthropic Claude and OpenAI models
+- **Optional Authentication**: Configurable auth system for development vs production
+- **MCP Tool Integration**: Access to 10,000+ tools across 2,700+ APIs
+- **Responsive Design**: Works on desktop and mobile devices
+
+For development, you can disable authentication and persistence by setting:
+
+```bash
+# In examples/chat/.env
+DISABLE_AUTH=true
+DISABLE_PERSISTENCE=true
+EXTERNAL_USER_ID=your-dev-user-id
+```
+
+See the [Chat App README](examples/chat/README.md) for detailed setup instructions.

@@ -15,7 +15,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
-import { useSession } from 'next-auth/react';
+import { useEffectiveSession } from '@/hooks/use-effective-session';
 import { SignInModal } from './sign-in-modal';
 
 import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
@@ -110,7 +110,7 @@ function PureMultimodalInput({
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [appSelectorOpen, setAppSelectorOpen] = useState(false);
 
-  const { data: session, status: authStatus } = useSession();
+  const { data: session, status: authStatus } = useEffectiveSession();
   
   const submitForm = useCallback((e?: React.FormEvent) => {
     // Prevent default form submission behavior if event is provided
@@ -348,7 +348,7 @@ function PureAttachmentsButton({
   status: UseChatHelpers['status'];
   setSignInModalOpen: (isOpen: boolean) => void;
 }) {
-  const { status: authStatus } = useSession();
+  const { status: authStatus } = useEffectiveSession();
   const isUnauthenticated = authStatus === 'unauthenticated';
   
   return (

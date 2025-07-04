@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { memo, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useEffectiveSession } from '@/hooks/use-effective-session';
 import { UseChatHelpers } from '@ai-sdk/react';
 import { SignInModal } from './sign-in-modal';
 import { useIsMobile } from '../hooks/use-mobile';
@@ -24,7 +24,7 @@ interface SuggestedAction {
 
 function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const { status: authStatus } = useSession();
+  const { status: authStatus } = useEffectiveSession();
   const isMobile = useIsMobile();
   
   const handleActionClick = (e: React.MouseEvent, actionText: string) => {

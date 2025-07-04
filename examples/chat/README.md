@@ -2,11 +2,31 @@
 
 Pipedream's fork of the [Next.js AI Chatbot](https://chat.vercel.ai/)
 
-The goal is to show how you can use Pipedream's MCP servers to dynamically provide 
-thousands of tools to the chat.
+This demo app showcases how you can integrate Pipedream's MCP (Model Context Protocol) server into your AI application, providing access to 10,000+ tools across 2,700+ APIs. The chat interface demonstrates real-time interaction with external services through natural language.
+
+### Key Features
+
+- **MCP Integration**: Connect to thousands of APIs through Pipedream's MCP server
+- **Multi-model Support**: Works with both Anthropic Claude and OpenAI models
+- **Optional Authentication**: Configurable auth system for development vs production
+- **Real-time API Calls**: Execute actions across different platforms directly from chat
+- **Responsive Design**: Works on desktop and mobile devices
+
+### Development Mode
+
+For local development, you can disable authentication and persistence:
+
+```bash
+# In your .env file
+DISABLE_AUTH=true
+DISABLE_PERSISTENCE=true
+EXTERNAL_USER_ID=your-dev-user-id
+```
+
+This allows you to test the chat functionality without setting up authentication or database persistence.
 
 > [!IMPORTANT]  
-> Treat this project as a reference.
+> Treat this project as a reference implementation for integrating MCP servers into AI applications.
 
 ## Model Providers
 

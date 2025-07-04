@@ -1,10 +1,10 @@
-import { auth } from '@/app/(auth)/auth';
 import { getConnectedAccounts } from './actions';
 import { ConnectedAccounts } from '@/components/connected-accounts';
 import { ChatHeader } from '@/components/chat-header';
+import { getEffectiveSession, shouldPersistData } from '@/lib/auth-utils';
 
 export default async function AccountsPage() {
-  const session = await auth();
+  const session = await getEffectiveSession();
   if (!session?.user) {
     return <div>You must be signed in to view this page.</div>;
   }

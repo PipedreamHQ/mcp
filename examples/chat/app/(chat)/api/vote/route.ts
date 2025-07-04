@@ -1,5 +1,5 @@
-import { auth } from '@/app/(auth)/auth';
 import { getChatById, getVotesByChatId, voteMessage } from '@/lib/db/queries';
+import { getEffectiveSession, shouldPersistData } from '@/lib/auth-utils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -9,10 +9,15 @@ export async function GET(request: Request) {
     return new Response('chatId is required', { status: 400 });
   }
 
-  const session = await auth();
+  const session = await getEffectiveSession();
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session || !session.user) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  // In dev mode without auth, return empty votes
+  if (!shouldPersistData()) {
+    return Response.json([], { status: 200 });
   }
 
   const chat = await getChatById({ id: chatId });
@@ -42,10 +47,15 @@ export async function PATCH(request: Request) {
     return new Response('messageId and type are required', { status: 400 });
   }
 
-  const session = await auth();
+  const session = await getEffectiveSession();
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session || !session.user) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  // In dev mode without auth, just return success without persisting
+  if (!shouldPersistData()) {
+    return new Response('Message voted', { status: 200 });
   }
 
   const chat = await getChatById({ id: chatId });

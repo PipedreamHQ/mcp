@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from '@/app/(auth)/auth';
+import { getEffectiveSession } from '@/lib/auth-utils';
 import { type Account } from '@pipedream/sdk/server';
 import { pdClient } from '@/lib/pd-backend-client';
 
@@ -9,7 +9,7 @@ import { pdClient } from '@/lib/pd-backend-client';
  * @returns Array of connected accounts
  */
 export async function getConnectedAccounts(): Promise<Account[]> {
-  const session = await auth();
+  const session = await getEffectiveSession();
   if (!session?.user?.id) {
     return [];
   }
@@ -36,7 +36,7 @@ export async function getConnectedAccounts(): Promise<Account[]> {
  */
 export async function deleteConnectedAccount(accountId: string): Promise<void> {
   const pd = pdClient()
-  const session = await auth();
+  const session = await getEffectiveSession();
   if (!session?.user?.id) {
     throw new Error('User not authenticated');
   }

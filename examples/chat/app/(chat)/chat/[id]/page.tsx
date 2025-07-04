@@ -9,12 +9,19 @@ import { DataStreamHandler } from '@/components/data-stream-handler';
 import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
 import { DBMessage } from '@/lib/db/schema';
 import { Attachment, UIMessage } from 'ai';
-import { BASE_METADATA, BASE_TITLE } from '@/lib/constants';
+import { BASE_METADATA, BASE_TITLE, isAuthDisabled } from '@/lib/constants';
+import { getEffectiveSession, shouldPersistData } from '@/lib/auth-utils';
 
 export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
   const { id } = await params;
+  
+  // In dev mode without auth, skip database lookup and return default metadata
+  if (!shouldPersistData()) {
+    return BASE_METADATA;
+  }
+
   const chat = await getChatById({ id });
 
   if (!chat) {
@@ -77,13 +84,34 @@ export async function generateMetadata(
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const { id } = params;
+
+  // In dev mode without auth, create a fresh chat with no messages
+  if (!shouldPersistData()) {
+    const session = await getEffectiveSession();
+    const cookieStore = await cookies();
+    const chatModelFromCookie = cookieStore.get('chat-model');
+
+    return (
+      <>
+        <Chat
+          id={id}
+          initialMessages={[]}
+          selectedChatModel={chatModelFromCookie?.value || DEFAULT_CHAT_MODEL}
+          selectedVisibilityType="private"
+          isReadonly={false}
+        />
+        <DataStreamHandler id={id} />
+      </>
+    );
+  }
+
   const chat = await getChatById({ id });
 
   if (!chat) {
     notFound();
   }
 
-  const session = await auth();
+  const session = await getEffectiveSession();
 
   if (chat.visibility === 'private') {
     if (!session || !session.user) {

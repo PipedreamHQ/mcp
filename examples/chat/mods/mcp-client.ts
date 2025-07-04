@@ -3,6 +3,7 @@ import { Client as MCPClient } from "@modelcontextprotocol/sdk/client/index.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 import { jsonSchema, Schema, tool, ToolSet } from "ai"
 import Exa from "exa-js"
+import { pdHeaders } from "@/lib/pd-backend-client"
 
 type CallToolResult = any
 
@@ -122,12 +123,14 @@ class MCPSessionManager {
   private connectionPromise: Promise<void> | null = null
   private sessionId: string | undefined
   private chatId: string
+  private userId: string
 
-  constructor(mcpBaseUrl: string, userId: string, chatId: string, sessionId: string) {
+  constructor(mcpBaseUrl: string, userId: string, chatId: string, sessionId: string | undefined) {
     console.log(`Using ${mcpBaseUrl} as the MCP Server.`)
     this.serverUrl = `${mcpBaseUrl}/v1/${userId}`
     this.sessionId = sessionId
     this.chatId = chatId
+    this.userId = userId
     console.log(`Creating MCP Session: ${this.serverUrl} chatId=${this.chatId} sessionId=${this.sessionId}`)
   }
 
@@ -141,7 +144,18 @@ class MCPSessionManager {
 
     this.connectionPromise = new Promise(async (resolve, reject) => {
       try {
-        // Create MCP client using the SDK
+        let headers = {}
+        // Only include Pipedream headers when we have an existing sessionId
+        // The MCP server handles new sessions (undefined sessionId) differently
+        if (this.sessionId) {
+          try {
+            headers = await pdHeaders(this.userId)
+          } catch (error) {
+            console.warn('Failed to get Pipedream headers, proceeding without them:', error)
+          }
+        }
+        
+        // Create MCP client using the SDK - back to main branch approach
         const transport = new StreamableHTTPClientTransport(
           new URL(this.serverUrl),
           {
@@ -149,6 +163,7 @@ class MCPSessionManager {
             requestInit: {
               headers: {
                 "x-pd-mcp-chat-id": this.chatId,
+                ...headers,
               }
             } as RequestInit,
           }

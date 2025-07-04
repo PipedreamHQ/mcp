@@ -13,9 +13,9 @@ import { Messages } from './messages';
 import { VisibilityType } from './visibility-selector';
 import { useArtifactSelector } from '@/hooks/use-artifact';
 import { toast } from 'sonner';
-import { useSession } from 'next-auth/react';
 import { SuggestedActions } from './suggested-actions';
 import Link from 'next/link';
+import { useEffectiveSession } from '@/hooks/use-effective-session';
 
 export function Chat({
   id,
@@ -31,7 +31,7 @@ export function Chat({
   isReadonly: boolean;
 }) {
   const { mutate } = useSWRConfig();
-  const { data: session } = useSession();
+  const { data: session } = useEffectiveSession();
   const isSignedIn = !!session?.user;
 
   const {
@@ -89,6 +89,7 @@ export function Chat({
                   reload={reload}
                   isReadonly={isReadonly}
                   isArtifactVisible={isArtifactVisible}
+                  append={append}
                 />
               ) : (
                 <div className="text-center mb-4 px-4 sm:px-0">
@@ -101,10 +102,10 @@ export function Chat({
                   <p 
                     className="text-muted-foreground max-w-sm mx-auto"
                   >
-                    Chat directly with 2500+ APIs powered by {" "}
+                    Chat directly with 2700+ APIs powered by {" "}
                     <Link
                       className="font-medium underline underline-offset-4"
-                      href="https://pipedream.com/docs/connect/mcp"
+                      href="https://pipedream.com/docs/connect/mcp/developers"
                       target="_blank"
                     >
                       Pipedream Connect

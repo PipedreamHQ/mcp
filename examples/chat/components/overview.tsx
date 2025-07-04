@@ -45,7 +45,7 @@ export const Overview = () => {
             href="https://mcp.pipedream.com/"
             target="_blank"
           >
-            2500+ built-in APIs
+            2700+ built-in APIs
           </Link>{" "}
            {" "}and 10k+ tools, use Pipedream Chat to supercharge your productivity.
         </p>

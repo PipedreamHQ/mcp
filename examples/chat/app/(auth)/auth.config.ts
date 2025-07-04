@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth"
+import { isAuthDisabled } from "@/lib/constants"
 
 export const authConfig = {
   pages: {
@@ -13,6 +14,11 @@ export const authConfig = {
   ],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
+      // If auth is disabled (dev mode), allow all requests
+      if (isAuthDisabled) {
+        return true
+      }
+
       const isLoggedIn = !!auth?.user
       const isOnRegister = nextUrl.pathname.startsWith("/register")
       const isOnLogin = nextUrl.pathname.startsWith("/login")

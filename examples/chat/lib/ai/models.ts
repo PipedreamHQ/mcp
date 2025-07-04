@@ -1,4 +1,4 @@
-export const DEFAULT_CHAT_MODEL: string = "claude-3.7-sonnet"
+export const DEFAULT_CHAT_MODEL: string = "claude-sonnet-4-0"
 
 interface ChatModel {
   id: string
@@ -18,12 +18,12 @@ export const chatModels: Array<ChatModel> = [
     description: "Flagship model for complex tasks",
   },
   {
-    id: "claude-opus-4",
+    id: "claude-opus-4-0",
     name: "Anthropic: Claude Opus 4",
     description: "Highest level of intelligence and capability",
   },
   {
-    id: "claude-sonnet-4",
+    id: "claude-sonnet-4-0",
     name: "Anthropic: Claude Sonnet 4",
     description: "High intelligence and balanced performance",
   },

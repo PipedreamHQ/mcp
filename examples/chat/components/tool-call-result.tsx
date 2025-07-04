@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import { createFrontendClient } from "@pipedream/sdk/browser"
 import { prettifyToolName } from "@/lib/utils";
 import { UseChatHelpers } from '@ai-sdk/react';
+import { useEffectiveSession } from '@/hooks/use-effective-session';
 
 type ConnectParams = {
   token: string | undefined;
@@ -40,11 +41,16 @@ export const ToolCallResult = ({
     connectParams.app = params?.get('app')
   }
 
-  const pd = createFrontendClient()
+  const { data: session } = useEffectiveSession();
+  const pd = createFrontendClient({
+    projectId: process.env.PIPEDREAM_PROJECT_ID!,
+    environment: (process.env.PIPEDREAM_PROJECT_ENVIRONMENT || 'production') as any,
+  });
   const connectAccount = () => {
-    if (connectParams.app && connectParams.token) {
+    if (connectParams.app && connectParams.token && session?.user?.id) {
       pd.connectAccount({
         ...connectParams,
+        externalUserId: session.user.id,
         onSuccess: ({ id: accountId }) => {
           append({
             role: "user",
@@ -60,20 +66,20 @@ export const ToolCallResult = ({
       <CollapsibleTrigger className="flex gap-2 items-center justify-center">
         <Check className="text-green-500" />
         {name === 'Web_Search' ? (
-          <div className="flex items-center justify-center h-5 w-5 rounded-sm overflow-hidden mr-1 bg-muted/20">
-            <Globe className="h-4 w-4 text-foreground/70 dark:text-white" />
+          <div className="flex items-center justify-center size-5 rounded-sm overflow-hidden mr-1 bg-muted/20">
+            <Globe className="size-4 text-foreground/70 dark:text-white" />
           </div>
         ) : appId && (
-          <div className="flex items-center justify-center h-5 w-5 bg-white dark:bg-gray-100 rounded-sm overflow-hidden mr-1">
+          <div className="flex items-center justify-center size-5 bg-white dark:bg-gray-100 rounded-sm overflow-hidden mr-1">
             <img
               src={iconUrl}
               alt="icon"
-              className="h-4 w-4 rounded"
+              className="size-4 rounded"
             />
           </div>
         )}
       <p className="text-sm text-slate-500 dark:text-slate-400">{prettifyToolName(name)}</p>
-        <ChevronsUpDown className="h-4 w-4" />
+        <ChevronsUpDown className="size-4" />
         <span className="sr-only">Toggle</span>
       </CollapsibleTrigger>
       {(args || result) && (
@@ -97,11 +103,11 @@ export const ToolCallResult = ({
               onClick={connectAccount}
             >
             {(appId) && (
-              <div className="flex items-center justify-center h-6 w-6 bg-white dark:bg-gray-100 rounded-sm overflow-hidden mr-1">
+              <div className="flex items-center justify-center size-6 bg-white dark:bg-gray-100 rounded-sm overflow-hidden mr-1">
                 <img
                   src={iconUrl}
                   alt="icon"
-                  className="h-5 w-5 rounded"
+                  className="size-5 rounded"
                 />
               </div>
             )}
@@ -109,7 +115,7 @@ export const ToolCallResult = ({
             </Button>
           </div>
           <p className="mt-3 flex items-center text-sm text-slate-500 dark:text-slate-400">
-            <Lock className="mr-1 h-3 w-3" />
+            <Lock className="mr-1 size-3" />
             <span>Credentials are encrypted. Revoke anytime.</span>
           </p>
         </div>

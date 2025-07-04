@@ -53,6 +53,22 @@ export function generateUUID(): string {
   });
 }
 
+export function getGuestUserId(): string {
+  // Use EXTERNAL_USER_ID from env (for development)
+  return process.env.EXTERNAL_USER_ID || 'local-dev-user';
+}
+
+export function createGuestSession() {
+  return {
+    user: {
+      id: getGuestUserId(),
+      name: 'Guest User',
+      email: 'guest@example.com'
+    }
+  };
+}
+
+
 function addToolMessageToChat({
   toolMessage,
   messages,

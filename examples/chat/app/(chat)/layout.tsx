@@ -6,6 +6,8 @@ import { auth } from '../(auth)/auth';
 import Script from 'next/script';
 import { SessionProvider } from '@/components/session-provider';
 import { SignedOutHeader } from '@/components/signed-out-header';
+import { isAuthDisabled } from '@/lib/constants';
+import { createGuestSession } from '@/lib/utils';
 
 export const experimental_ppr = true;
 
@@ -14,8 +16,11 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const [session, cookieStore] = await Promise.all([auth(), cookies()]);
+  const [rawSession, cookieStore] = await Promise.all([auth(), cookies()]);
   const isCollapsed = cookieStore.get('sidebar:state')?.value !== 'true';
+  
+  // Use effective session (real or guest based on auth requirement)
+  const session = isAuthDisabled ? createGuestSession() : rawSession;
   const isSignedIn = !!session?.user;
 
   return (
@@ -24,7 +29,10 @@ export default async function Layout({
         src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"
         strategy="beforeInteractive"
       />
-      <SessionProvider>
+      <SessionProvider 
+        isAuthDisabled={isAuthDisabled} 
+        guestSession={isAuthDisabled ? session : undefined}
+      >
         <SidebarProvider defaultOpen={!isCollapsed}>
           {isSignedIn ? (
             <>
