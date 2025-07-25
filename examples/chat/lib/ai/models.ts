@@ -8,6 +8,11 @@ interface ChatModel {
 
 export const chatModels: Array<ChatModel> = [
   {
+    id: "meta-llama/llama-4-scout-17b-16e-instruct",
+    name: "Llama 4 Scout",
+    description: "Fast, performant model",
+  },
+  {
     id: "gemini-2.5-flash",
     name: "Gemini 2.5 Flash",
     description: "High performance, low cost model",
